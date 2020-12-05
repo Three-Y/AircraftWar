@@ -9,6 +9,7 @@
     pygame.Rect(x, y, width, height) 记录游戏中元素的坐标和大小
     pygame.time.Clock() 游戏时钟对象
     clock.tick(一秒多少帧) 游戏更新频率
+    pygame.event.get() 返回一个列表，记录了监听到的所有事件
 """
 
 import pygame
@@ -34,6 +35,12 @@ clock = pygame.time.Clock()
 while True:
     # 1秒60帧
     clock.tick(60)
+
+    # 事件监听
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
 
     player_rect.y -= 3
     if player_rect.y < -126:
