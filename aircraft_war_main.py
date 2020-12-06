@@ -15,6 +15,7 @@ class AircraftWarGame:
         self.__create_sprites()
         # 定时器事件
         pygame.time.set_timer(CREATE_ENEMY_EVENT, 1000)
+        pygame.time.set_timer(HERO_FIRE_EVENT, 400)
 
     def statr_game(self):
         print("Game Start!")
@@ -41,9 +42,11 @@ class AircraftWarGame:
     def __event_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.over_game()
+                self.__game_over()
             elif event.type == CREATE_ENEMY_EVENT:
                 self.enemy_group.add(Enemy())
+            elif event.type == HERO_FIRE_EVENT:
+                self.hero.fire()
 
             # 方法一：长按不会一直触发
             # elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
@@ -59,7 +62,12 @@ class AircraftWarGame:
                 self.hero.speed = 0
 
     def __check_collision(self):
-        pass
+        pygame.sprite.groupcollide(self.enemy_group, self.hero.bullet_group, True, True)
+        died_enemys = pygame.sprite.spritecollide(self.hero,self.enemy_group, True)
+
+        if len(died_enemys) > 0:
+            self.hero.kill()
+            self.__game_over()
 
     def __update_sprite_group(self):
         self.bg_group.update()
@@ -68,11 +76,14 @@ class AircraftWarGame:
         self.enemy_group.update()
         self.enemy_group.draw(self.screen)
 
+        self.hero.bullet_group.update()
+        self.hero.bullet_group.draw(self.screen)
+
         self.hero_group.update()
         self.hero_group.draw(self.screen)
 
     @staticmethod
-    def over_game():
+    def __game_over():
         print("Game Over!")
         pygame.quit()
         exit()

@@ -16,6 +16,8 @@
     pygame.KEYDOWN 按键按下事件
     事件对象.key 按下的按键
     pygame.key.get_pressed() 返回按下的按键的元组
+    pygame.sprite.groupcollide(self.enemy_group, self.hero.bullet_group, True, True) 精灵组之间的碰撞检测
+    pygame.sprite.spritecollide(self.hero,self.enemy_group, True) 精灵与精灵组之间的碰撞检测
 """
 
 import pygame

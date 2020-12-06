@@ -7,6 +7,8 @@ SCREEN_RECT = pygame.Rect(0, 0, 480, 700)
 REFRESH_TIMES_PER_SEC = 60
 # 敌机生成事件
 CREATE_ENEMY_EVENT = pygame.USEREVENT
+# 发射子弹事件
+HERO_FIRE_EVENT = pygame.USEREVENT + 1
 
 
 class GameSprite(pygame.sprite.Sprite):
@@ -57,6 +59,13 @@ class Hero(GameSprite):
         self.rect.bottom = SCREEN_RECT.height - 50
         self.speed = 0
         self.rect.centerx = SCREEN_RECT.centerx
+        self.bullet_group = pygame.sprite.Group()
+
+    def fire(self):
+        # 一次发射三颗子弹
+        for i in [0, 1, 2]:
+            bullet = Bullet(self.rect.centerx, self.rect.y + 10 + 13 * i)
+            self.bullet_group.add(bullet)
 
     def update(self, *args, **kwargs) -> None:
         self.rect.x += self.speed
@@ -67,4 +76,13 @@ class Hero(GameSprite):
 
 
 class Bullet(GameSprite):
-    pass
+
+    def __init__(self, x, y):
+        super().__init__("./images/bullet1.png", -2)
+        self.rect.centerx = x
+        self.rect.y = y
+
+    def update(self, *args, **kwargs) -> None:
+        super().update()
+        if self.rect.bottom < 0:
+            self.kill()
